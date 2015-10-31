@@ -2,3 +2,4 @@
 10/30/15-22:31:49: Added resource folder with initial version of app logo.
 10/30/15-22:43:49: Updated app launcher image.
 10/30/15-23:19:22: Added simple background on default fragment.
+10/31/15-09:37:08: Adding font resources.
