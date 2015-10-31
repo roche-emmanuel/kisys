@@ -6,3 +6,4 @@
 10/31/15-09:38:34: Ignoring temp folder.
 10/31/15-13:56:19: Added display for first addition operation.
 10/31/15-18:25:20: Added initial event handlers for number buttons.
+10/31/15-19:08:16: Added editable support on final addition line.

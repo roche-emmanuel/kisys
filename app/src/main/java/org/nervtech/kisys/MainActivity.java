@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private Typeface _bbFont;
     private int _fontColor;
     private int _fontSize;
+    private TextView _currentSlot = null;
 
     /* We should add additional text views here to render the operation numbers:*/
     private HashMap<String, TextView> _texts = new HashMap<String, TextView>();
@@ -68,17 +69,17 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout l3 = (LinearLayout) findViewById(R.id.line_3);
         LinearLayout l4 = (LinearLayout) findViewById(R.id.line_4);
 
-        addOperationSlot(l1, "l1_u", "0");
-        addOperationSlot(l1, "l1_d", "1");
-        addOperationSlot(l1, "l1_c", "2");
-        addOperationSlot(l2, "l2_u", "3");
-        addOperationSlot(l2, "l2_d", "4");
-        addOperationSlot(l2, "l2_c", "5");
-        addOperationSlot(l2, "l2_m", "+");
+        addOperationSlot(l1, "l1_u", "0",false);
+        addOperationSlot(l1, "l1_d", "1",false);
+        addOperationSlot(l1, "l1_c", "2",false);
+        addOperationSlot(l2, "l2_u", "3",false);
+        addOperationSlot(l2, "l2_d", "4",false);
+        addOperationSlot(l2, "l2_c", "5",false);
+        addOperationSlot(l2, "l2_m", "+",false);
 
-        addOperationSlot(l4, "l4_u", "3");
-        addOperationSlot(l4, "l4_d", "5");
-        addOperationSlot(l4, "l4_c", "7");
+        addOperationSlot(l4, "l4_u", "3",true);
+        addOperationSlot(l4, "l4_d", "5",true);
+        addOperationSlot(l4, "l4_c", "7",true);
 
         OperationLine opline = new OperationLine(this);
         opline.setLayoutParams(new ViewGroup.LayoutParams(4*(_fontSize+40), 40));
@@ -93,6 +94,40 @@ public class MainActivity extends AppCompatActivity {
         }
         for(int i=5;i<10;++i) {
             addNumberButton(nbl2,i);
+        }
+    }
+
+    /*
+        Helper method that can be called to assign the current target slot for the next
+        number button press.
+     */
+    public void setCurrentTargetSlot(TextView tv)
+    {
+        // If we are already on this slot, then there is nothing to do:
+        if(_currentSlot==tv) {
+            return;
+        }
+
+        // First restore the display for the previous target slot if any:
+        if(_currentSlot!=null) {
+            _currentSlot.setBackgroundResource(R.drawable.hidden_bg);
+        }
+
+        // Update the current slot:
+        _currentSlot = tv;
+
+        // Add the selection background on the new current slot:
+        if(_currentSlot!=null) {
+            _currentSlot.setBackgroundResource(R.drawable.selection_border);
+        }
+    }
+
+    /*
+        Method used to assign a value to the current slot.
+     */
+    public void setCurrentSlotValue(int val) {
+        if(_currentSlot!=null) {
+            _currentSlot.setText(""+val);
         }
     }
 
@@ -126,7 +161,9 @@ public class MainActivity extends AppCompatActivity {
         tv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(),"Pressed button "+val,Toast.LENGTH_SHORT).show();
+//                Toast.makeText(v.getContext(),"Pressed button "+val,Toast.LENGTH_SHORT).show();
+                MainActivity activity = (MainActivity)v.getContext();
+                activity.setCurrentSlotValue(val);
             }
         });
     }
@@ -134,7 +171,7 @@ public class MainActivity extends AppCompatActivity {
     /*
         Helper method used to create an operation slot
      */
-    private void addOperationSlot(LinearLayout parent, String name, String value) {
+    private void addOperationSlot(LinearLayout parent, String name, String value, boolean editable) {
         parent.setPadding(50, 0, 50, 0);
         parent.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
 //        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)parent.getLayoutParams();
@@ -151,6 +188,18 @@ public class MainActivity extends AppCompatActivity {
 
         _texts.put(name, tv);
         parent.addView(tv, 0);
+
+        // If we are editable then we should add additional behavior:
+        if(editable) {
+            tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // We should assign this view as the current target slot:
+                    MainActivity activity = (MainActivity)v.getContext();
+                    activity.setCurrentTargetSlot((TextView)v);
+                }
+            });
+        }
     }
 
     @Override
