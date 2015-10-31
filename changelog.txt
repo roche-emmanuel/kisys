@@ -5,3 +5,4 @@
 10/31/15-09:37:08: Adding font resources.
 10/31/15-09:38:34: Ignoring temp folder.
 10/31/15-13:56:19: Added display for first addition operation.
+10/31/15-18:25:20: Added initial event handlers for number buttons.

@@ -3,9 +3,11 @@ package org.nervtech.kisys;
 import android.content.res.AssetManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Layout;
@@ -17,6 +19,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -80,9 +83,58 @@ public class MainActivity extends AppCompatActivity {
         OperationLine opline = new OperationLine(this);
         opline.setLayoutParams(new ViewGroup.LayoutParams(4*(_fontSize+40), 40));
         l3.addView(opline);
+
+        // Prepare the lines of buttons:
+        LinearLayout nbl1 = (LinearLayout) findViewById(R.id.nb_line_1);
+        LinearLayout nbl2 = (LinearLayout) findViewById(R.id.nb_line_2);
+
+        for(int i=0;i<5;++i) {
+            addNumberButton(nbl1,i);
+        }
+        for(int i=5;i<10;++i) {
+            addNumberButton(nbl2,i);
+        }
     }
 
-    public void addOperationSlot(LinearLayout parent, String name, String value) {
+    /*
+        Helper method used to add a number button on the interface
+     */
+    private void addNumberButton(LinearLayout parent, final int val)
+    {
+        int fSize = 30;
+        TextView tv = new TextView(this);
+        tv.setTypeface(_bbFont);
+        tv.setTextSize(fSize);
+        tv.setTextColor(_fontColor);
+        tv.setText("" + val);
+
+        LinearLayout.LayoutParams llp = new LinearLayout.LayoutParams(100, 100);
+        llp.setMargins(0,0,(val==4 || val==9) ? 0 : 20,0);
+        tv.setLayoutParams(llp);
+
+//        tv.setTextAlignment(TextView.TEXT_ALIGNMENT_CENTER);
+        tv.setGravity(Gravity.CENTER_VERTICAL | Gravity.CENTER_HORIZONTAL);
+//        tv.setWidth(fSize + 10);
+//        tv.setPadding(10,10,10,10);
+//        tv.setBackgroundColor(Color.rgb(10, 10, 10));
+        tv.setBackgroundResource(R.drawable.button_bg);
+//        Drawable d = ContextCompat.getDrawable(this, R.drawable.button_bg);
+//        tv.setBackground(d);
+        parent.addView(tv);
+
+        // Add a click listener:
+        tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(v.getContext(),"Pressed button "+val,Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    /*
+        Helper method used to create an operation slot
+     */
+    private void addOperationSlot(LinearLayout parent, String name, String value) {
         parent.setPadding(50, 0, 50, 0);
         parent.setGravity(Gravity.RIGHT | Gravity.CENTER_VERTICAL);
 //        LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)parent.getLayoutParams();
